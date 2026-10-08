@@ -210,6 +210,34 @@ export class AgentHostManagementService implements IAgentHostManagementService {
 		return this._runMutation(() => this._agentService.addMcpServerConfiguration!(provider, name, config));
 	}
 
+	listAgentExtensions(): Promise<IAgentExtensionInventory> {
+		if (!this._agentService.listAgentExtensions) {
+			throw new Error('Copilot extension inventory is unavailable');
+		}
+		return this._agentService.listAgentExtensions();
+	}
+
+	setAgentExtensionEnabled(extensionId: string, enabled: boolean, session?: URI): Promise<void> {
+		if (!this._agentService.setAgentExtensionEnabled) {
+			throw new Error('Copilot extension management is unavailable');
+		}
+		return this._runMutation(() => this._agentService.setAgentExtensionEnabled!(extensionId, enabled, session));
+	}
+
+	listSessionCanvases(session: URI): Promise<readonly IAgentCanvasInfo[]> {
+		if (!this._agentService.listSessionCanvases) {
+			throw new Error('Copilot canvas inventory is unavailable');
+		}
+		return this._agentService.listSessionCanvases(session);
+	}
+
+	refreshSessionCanvases(session: URI): Promise<readonly IAgentCanvasInfo[]> {
+		if (!this._agentService.refreshSessionCanvases) {
+			throw new Error('Copilot canvas refresh is unavailable');
+		}
+		return this._runMutation(() => this._agentService.refreshSessionCanvases!(session));
+	}
+
 	shutdown(): Promise<void> {
 		if (!this._shutdownPromise) {
 			this._shuttingDown = true;
