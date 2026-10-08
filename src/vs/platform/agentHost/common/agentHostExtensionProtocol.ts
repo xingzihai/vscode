@@ -5,7 +5,7 @@
 
 import { vBoolean, vEnum, vObj, vOptionalProp, vString, type ValidatorType } from '../../../base/common/validation.js';
 import type { IDevContainerAgentHostConnectResult } from './devContainerAgentHost.js';
-import type { AgentExtensionMode, AgentExtensionSource } from './agent.js';
+import type { AgentCanvasExtensionSource, AgentExtensionMode, AgentExtensionSource } from './agent.js';
 import type { AgentHostDebugLogsArtifactKind, IAgentHostManagedSettingsDiagnostics, IAgentHostNetworkDiagnosticsInfo, IAgentHostNetworkFetchResult } from './agentService.js';
 import type { InitializeResult } from './state/protocol/common/commands.js';
 import type { McpAuthRequirement } from './state/protocol/channels-session/state.js';

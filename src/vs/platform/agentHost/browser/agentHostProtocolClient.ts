@@ -22,7 +22,7 @@ import { localize } from '../../../nls.js';
 import { ILogService } from '../../log/common/log.js';
 import { FileSystemProviderErrorCode, toFileSystemProviderErrorCode } from '../../files/common/files.js';
 import { ConfigurationTarget, ConfigurationTargetToString, IConfigurationService } from '../../configuration/common/configuration.js';
-import { type AgentExtensionMode, type AgentExtensionSource, type IAgentCanvasInfo, IAgentCreateChatRequestOptions, IAgentCreateSessionConfig, type IAgentExtensionInventory, IAgentResolveSessionConfigParams, IAgentSessionConfigCompletionsParams, IAgentSessionMetadata, AuthenticateParams, AuthenticateResult, IMcpNotification } from '../common/agent.js';
+import { type AgentCanvasExtensionSource, type AgentExtensionMode, type AgentExtensionSource, type IAgentCanvasInfo, IAgentCreateChatRequestOptions, IAgentCreateSessionConfig, type IAgentExtensionInventory, IAgentResolveSessionConfigParams, IAgentSessionConfigCompletionsParams, IAgentSessionMetadata, AuthenticateParams, AuthenticateResult, IMcpNotification } from '../common/agent.js';
 import { AGENT_HOST_DEBUG_LOGS_CHUNK_BYTES, AGENT_HOST_DEBUG_LOGS_MAX_ENTRIES, IAgentConnection, IAgentHostManagedSettingsDiagnostics, IAgentHostNetworkDiagnosticsInfo, IAgentHostNetworkFetchResult, type AgentHostDebugLogsArtifactKind, type IAgentHostDebugLogsArtifact, type IAgentHostDebugLogsChunk } from '../common/agentService.js';
 import { supportsAgentHostDebugLogsCancellation } from '../common/meta/agentHostDebugLogsMeta.js';
 import { CompleteSavedChatContinuationExtensionMethod, CancelAgentHostDebugLogsExtensionMethod, ClaimAgentHostDetachedWorktreeExtensionMethod, CollectAgentHostDebugLogsExtensionMethod, CreateAgentHostDetachedWorktreeExtensionMethod, DeleteAgentHostDetachedWorktreeExtensionMethod, GetAgentHostSessionStateFileExtensionMethod, ImportSessionExtensionMethod, ReadAgentHostDebugLogsChunkExtensionMethod, ReconcileAgentHostDetachedWorktreesExtensionMethod, RemoveSessionArtifactExtensionMethod, ReportAgentHostFirstResponseExtensionMethod, ReportChatUserInteractionExtensionMethod, RequestAgentHostMcpAuthenticationExtensionMethod, RequestAgentHostWorkspaceTrustExtensionMethod, SetAgentHostDetachedWorktreeArchivedExtensionMethod, StopBackgroundWorkExtensionMethod, supportsAgentHostChatStateFile, supportsAgentHostDevContainers, type IAgentHostExtensionCommandMap, type IAgentHostExtensionInitializeResult, type IAgentHostExtensionServerCommandMap, type IAgentHostMcpAuthenticationRequest, ReadSavedChatExtensionMethod } from '../common/agentHostExtensionProtocol.js';
@@ -83,6 +83,10 @@ function isAgentExtensionMode(value: unknown): value is AgentExtensionMode {
 
 function isAgentExtensionSource(value: unknown): value is AgentExtensionSource {
 	return value === 'user' || value === 'plugin';
+}
+
+function isAgentCanvasExtensionSource(value: unknown): value is AgentCanvasExtensionSource {
+	return value === 'user' || value === 'project' || value === 'session' || value === 'plugin' || value === 'unknown';
 }
 
 /**
@@ -1778,6 +1782,7 @@ export class AgentHostProtocolClient extends Disposable implements IAgentConnect
 			if (!canvas || typeof canvas !== 'object'
 				|| typeof canvas.canvasId !== 'string' || !canvas.canvasId
 				|| typeof canvas.extensionId !== 'string' || !canvas.extensionId
+				|| !isAgentCanvasExtensionSource(canvas.extensionSource)
 				|| canvas.extensionName !== undefined && typeof canvas.extensionName !== 'string'
 				|| typeof canvas.displayName !== 'string' || !canvas.displayName
 				|| typeof canvas.description !== 'string'
@@ -1788,6 +1793,7 @@ export class AgentHostProtocolClient extends Disposable implements IAgentConnect
 			return {
 				canvasId: canvas.canvasId,
 				extensionId: canvas.extensionId,
+				extensionSource: canvas.extensionSource,
 				...(canvas.extensionName ? { extensionName: canvas.extensionName } : {}),
 				displayName: canvas.displayName,
 				description: canvas.description,

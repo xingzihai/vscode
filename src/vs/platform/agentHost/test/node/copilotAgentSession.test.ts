@@ -3593,9 +3593,15 @@ suite('CopilotAgentSession', () => {
 	test('reconciles extension membership and reads canvas inventory through the live SDK session', async () => {
 		const { session, mockSession } = await createAgentSession(disposables, {
 			configureMockSession: mock => {
+				mock.extensions.push({
+					id: 'opaque-provider',
+					name: 'Preview',
+					source: 'plugin',
+					status: 'running',
+				});
 				mock.canvases.push({
 					canvasId: 'preview',
-					extensionId: 'user:preview',
+					extensionId: 'opaque-provider',
 					extensionName: 'Preview',
 					displayName: 'Preview Canvas',
 					description: 'Interactive preview.',
@@ -3617,7 +3623,8 @@ suite('CopilotAgentSession', () => {
 			reconcileCalls: 2,
 			initial: [{
 				canvasId: 'preview',
-				extensionId: 'user:preview',
+				extensionId: 'opaque-provider',
+				extensionSource: 'plugin',
 				extensionName: 'Preview',
 				displayName: 'Preview Canvas',
 				description: 'Interactive preview.',
@@ -3626,7 +3633,8 @@ suite('CopilotAgentSession', () => {
 			}],
 			refreshed: [{
 				canvasId: 'preview',
-				extensionId: 'user:preview',
+				extensionId: 'opaque-provider',
+				extensionSource: 'plugin',
 				extensionName: 'Preview',
 				displayName: 'Preview Canvas',
 				description: 'Interactive preview.',
