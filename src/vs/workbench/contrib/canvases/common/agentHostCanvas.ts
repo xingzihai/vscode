@@ -59,7 +59,7 @@ export class AgentHostCanvasCollection extends Disposable {
 		super();
 	}
 
-	createContext(owner: ICanvasOwner, references: IObservable<readonly CanvasReference[] | undefined>, chat?: IObservable<ChatState | undefined>, onDidChangeDefinitions: Event<void> = Event.None): ICanvasContext {
+	createContext(owner: ICanvasOwner, frontendSessionResource: URI, references: IObservable<readonly CanvasReference[] | undefined>, chat?: IObservable<ChatState | undefined>, onDidChangeDefinitions: Event<void> = Event.None): ICanvasContext {
 		const states = mapObservableArrayCached(this, references.map(value => value ?? []), canvas => {
 			const resource = URI.parse(canvas.resource, true);
 			const subscription = derived(this, reader => {
@@ -88,7 +88,7 @@ export class AgentHostCanvasCollection extends Disposable {
 				}, owner.chat),
 			}
 			: undefined;
-		return { owner, canvases, openRequests, definitionProvider };
+		return { owner, frontendSessionResource, canvases, openRequests, definitionProvider };
 	}
 }
 

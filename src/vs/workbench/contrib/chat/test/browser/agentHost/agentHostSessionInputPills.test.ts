@@ -784,7 +784,7 @@ suite('AgentHostSessionInputPills', () => {
 		const dashboard = canvas('dashboard', 'Dashboard', 'https://example.test/dashboard');
 		const owner = { providerId: 'local/copilotcli', session: URI.parse('ahp-session:/42'), chat: URI.parse('ahp-session:/42/chats/main') };
 		const canvases = observableValue<readonly ICanvas[] | undefined>('canvases', [preview, pending]);
-		harness.showModel(upcastPartial<IChatModel>({ canvasContext: constObservable<ICanvasContext | undefined>({ owner, canvases }) }));
+		harness.showModel(upcastPartial<IChatModel>({ canvasContext: constObservable<ICanvasContext | undefined>({ owner, frontendSessionResource: URI.parse('agent-host-copilotcli:/frontend-session'), canvases }) }));
 		const disabled = harness.labels();
 		await configuration.setUserConfiguration(CanvasesEnabledSettingId, true);
 		configuration.onDidChangeConfigurationEmitter.fire(upcastPartial<IConfigurationChangeEvent>({ affectsConfiguration: key => key === CanvasesEnabledSettingId }));

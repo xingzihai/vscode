@@ -33,6 +33,7 @@ export class SessionCanvasesControl extends Disposable {
 			}
 			return {
 				owner: { providerId: currentSession.providerId, session: currentSession.resource, chat: currentChat.resource },
+				frontendSessionResource: currentSession.resource,
 				canvases: currentChat.canvases,
 			};
 		});
